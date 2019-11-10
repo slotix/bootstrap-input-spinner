@@ -4,14 +4,14 @@
  * License: MIT, see file 'LICENSE'
  */
 
-;(function ($) {
+; (function ($) {
     "use strict"
 
-    var triggerKeyPressed = false
+    var spacePressed = false
     var originalVal = $.fn.val
     $.fn.val = function (value) {
         if (arguments.length >= 1) {
-            if (this[0] && this[0]["bootstrap-input-spinner"] && this[0].setValue) {
+            if (this[0] && this[0]["input-spinner"] && this[0].setValue) {
                 var element = this[0];
                 setTimeout(function () {
                     element.setValue(value)
@@ -24,12 +24,10 @@
     $.fn.InputSpinner = $.fn.inputSpinner = function (options) {
 
         var config = {
-            decrementButton: "<strong>-</strong>", // button text
-            incrementButton: "<strong>+</strong>", // ..
-            groupClass: "", // css class of the resulting input-group
-            buttonsClass: "btn-outline-secondary",
-            buttonsWidth: "2.5rem",
-            textAlign: "center",
+            decrementButton: "<i class='minus  icon'></i>", // button text
+            incrementButton: "<i class='plus  icon'></i>", // ..
+            buttonsClass: "ui icon attached button",
+            buttonsWidth: "auto;",
             autoDelay: 500, // ms holding before auto value change
             autoInterval: 100, // speed of auto value change
             boostThreshold: 10, // boost after these steps
@@ -40,22 +38,21 @@
             config[option] = options[option]
         }
 
-        var html = '<div class="input-group ' + config.groupClass + '">' +
-            '<div class="input-group-prepend">' +
-            '<button style="min-width: ' + config.buttonsWidth + '" class="btn btn-decrement ' + config.buttonsClass + '" type="button">' + config.decrementButton + '</button>' +
-            '</div>' +
-            '<input type="text" style="text-align: ' + config.textAlign + '" class="form-control"/>' +
-            '<div class="input-group-append">' +
-            '<button style="min-width: ' + config.buttonsWidth + '" class="btn btn-increment ' + config.buttonsClass + '" type="button">' + config.incrementButton + '</button>' +
-            '</div>' +
-            '</div>'
+
+        var html = '<span class="">' +
+
+            '<button style="width: ' + config.buttonsWidth + '" class="left btn-decrement ' + config.buttonsClass + '" type="button">' + config.decrementButton + '</button>' +
+            '<input class="ui action input" type="text" style="text-align: center; border-radius: 0px; margin-top:-1px; width: 45%;"' + '/>' +
+            '<button style="width: ' + config.buttonsWidth + '" class="right btn-increment ' + config.buttonsClass + '" type="button">' + config.incrementButton + '</button>' +
+            '</span>'
+
 
         var locale = config.locale || navigator.language || "en-US"
 
         this.each(function () {
 
             var $original = $(this)
-            $original[0]["bootstrap-input-spinner"] = true
+            $original[0]["input-spinner"] = true
             $original.hide()
 
             var autoDelayHandler = null
@@ -81,17 +78,18 @@
             var value = parseFloat($original[0].value)
             var boostStepsCount = 0
 
-            var prefix = $original.attr("data-prefix") || ""
-            var suffix = $original.attr("data-suffix") || ""
+            // var prefix = $original.attr("data-prefix") || ""
+            // var suffix = $original.attr("data-suffix") || ""
 
-            if (prefix) {
-                var prefixElement = $('<span class="input-group-text">' + prefix + '</span>')
-                $inputGroup.find(".input-group-prepend").append(prefixElement)
-            }
-            if (suffix) {
-                var suffixElement = $('<span class="input-group-text">' + suffix + '</span>')
-                $inputGroup.find(".input-group-append").prepend(suffixElement)
-            }
+            // if (prefix) {
+            //     var prefixElement = $('<span class="">' + prefix + '</span>')
+            //     $inputGroup.find(".input-group-prepend").append(prefixElement)
+            // }
+            // if (suffix) {
+            //     var suffixElement = $('<span class="">' + suffix + '</span>')
+            //     $inputGroup.find(".input-group-append").prepend(suffixElement)
+            // }
+
 
             $original[0].setValue = function (newValue) {
                 setValue(newValue)
@@ -101,8 +99,7 @@
                 updateAttributes()
                 setValue(value, true)
             })
-            observer.observe($original[0], {attributes: true})
-
+            observer.observe($original[0], { attributes: true })
             $original.after($inputGroup)
 
             setValue(value)
@@ -140,9 +137,14 @@
                     newValue = Math.min(Math.max(newValue, min), max)
                     newValue = Math.round(newValue * Math.pow(10, decimals)) / Math.pow(10, decimals)
                     $original[0].value = newValue
+
+                    var prefix = $original.attr("data-prefix") || ""
+                    var suffix = $original.attr("data-suffix") || ""
+
                     if (updateInput) {
-                        $input[0].value = numberFormat.format(newValue)
+                        $input[0].value = prefix + ' ' + numberFormat.format(newValue) + ' ' + suffix
                     }
+
                     value = newValue
                 }
             }
@@ -152,7 +154,7 @@
                     setTimeout(function () {
                         var event
                         if (typeof (Event) === 'function') {
-                            event = new Event(type, {bubbles: true})
+                            event = new Event(type, { bubbles: true })
                         } else { // IE
                             event = document.createEvent('Event')
                             event.initEvent(type, true, true)
@@ -218,17 +220,18 @@
                 if (disabled || readonly) {
                     resetTimer()
                 }
-                var originalClass = $original.prop("class")
-                var groupClass = ""
+                //var originalClass = $original.prop("class")
+                // var groupClass = ""
                 // sizing
-                if (/form-control-sm/g.test(originalClass)) {
-                    groupClass = "input-group-sm"
-                } else if (/form-control-lg/g.test(originalClass)) {
-                    groupClass = "input-group-lg"
-                }
-                var inputClass = originalClass.replace(/form-control(-(sm|lg))?/g, "")
-                $inputGroup.prop("class", "input-group " + groupClass + " " + config.groupClass)
-                $input.prop("class", "form-control " + inputClass)
+                // if (/form-control-sm/g.test(originalClass)) {
+                //     groupClass = "input-group-sm"
+                // } else if (/form-control-lg/g.test(originalClass)) {
+                //     groupClass = "input-group-lg"
+                // }
+                // var inputClass = originalClass.replace(/form-control(-(sm|lg))?/g, "")
+                // $inputGroup.prop("class", "input-group " + groupClass + " " + config.groupClass)
+                // $input.prop("class", "form-control " + inputClass)
+                //$input.prop("class", "form-control")
 
                 // update the main attributes
                 min = parseFloat($original.prop("min")) || 0
@@ -270,8 +273,8 @@
             callback(e)
         })
         element.addEventListener("keyup", function (e) {
-            if ((e.keyCode === 32 || e.keyCode === 13)) {
-                triggerKeyPressed = false
+            if (e.keyCode === 32) {
+                spacePressed = false
                 callback(e)
             }
         })
@@ -289,8 +292,8 @@
             callback(e)
         })
         element.addEventListener("keydown", function (e) {
-            if ((e.keyCode === 32 || e.keyCode === 13) && !triggerKeyPressed) {
-                triggerKeyPressed = true
+            if (e.keyCode === 32 && !spacePressed) {
+                spacePressed = true
                 callback(e)
             }
         })
