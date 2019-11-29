@@ -39,12 +39,18 @@
         }
 
 
-        var html = '<span class="">' +
+        var html = '<div class="ui action input">' +
 
             '<button style="width: ' + config.buttonsWidth + '" class="left btn-decrement ' + config.buttonsClass + '" type="button">' + config.decrementButton + '</button>' +
-            '<input class="ui action input" type="text" style="text-align: center; border-radius: 0px; margin-top:-1px; width: 45%;"' + '/>' +
+            '<input class="ui action input" type="text" style="text-align: center; border-radius: 0px; margin-top:-1px; "' + '/>' +
             '<button style="width: ' + config.buttonsWidth + '" class="right btn-increment ' + config.buttonsClass + '" type="button">' + config.incrementButton + '</button>' +
-            '</span>'
+            '</div>'
+
+        // var html = '<div class="ui action input">' +
+        // '<button class="ui button">-</button>'+
+        //     '<input class="ui action input" type="text" style="text-align: center; border-radius: 0px; margin-top:-1px; width:45%"' + '/>' +
+        //     '<button class="ui button">+</button>' +
+        //     '</div>'
 
 
         var locale = config.locale || navigator.language || "en-US"
